@@ -19,6 +19,6 @@ int x_max;
 int y_max;
 
 /* Prototypes */
-extern void init_image(FILE* fh);
+extern void init_image(char* fname);
 
 #endif /* __IMAGE_H__ */
