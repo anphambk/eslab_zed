@@ -19,14 +19,14 @@ int init_v4l2(void)
 	}
 	else
 	{
-     	printf("driver:\t\t%s\n"    , cap.driver);
-     	printf("card:\t\t%s\n"      , cap.card);
-     	printf("bus_info:\t%s\n"    , cap.bus_info);
-     	printf("version:\t%d\n"     , cap.version);
-     	printf("capabilities:\t%x\n", cap.capabilities);
+    printf("driver:\t\t%s\n"    , cap.driver);
+    printf("card:\t\t%s\n"      , cap.card);
+    printf("bus_info:\t%s\n"    , cap.bus_info);
+    printf("version:\t%d\n"     , cap.version);
+    printf("capabilities:\t%x\n", cap.capabilities);
 
-     	if ((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) == V4L2_CAP_VIDEO_CAPTURE)
-			printf("Device %s: supports capture.\n",FILE_VIDEO);
+    if ((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) == V4L2_CAP_VIDEO_CAPTURE)
+    printf("Device %s: supports capture.\n",FILE_VIDEO);
 
 		if ((cap.capabilities & V4L2_CAP_STREAMING) == V4L2_CAP_STREAMING)
 			printf("Device %s: supports streaming.\n",FILE_VIDEO);
@@ -62,11 +62,11 @@ int init_v4l2(void)
 		return FALSE;
 	}
 	{
-     	printf("fmt.type:\t\t%d\n", fmt.type);
-     	printf("pix.pixelformat:\t%c%c%c%c\n", fmt.fmt.pix.pixelformat & 0xFF, (fmt.fmt.pix.pixelformat >> 8) & 0xFF, (fmt.fmt.pix.pixelformat >> 16) & 0xFF, (fmt.fmt.pix.pixelformat >> 24) & 0xFF);
-     	printf("pix.height:\t\t%d\n", fmt.fmt.pix.height);
-     	printf("pix.width:\t\t%d\n", fmt.fmt.pix.width);
-     	printf("pix.field:\t\t%d\n", fmt.fmt.pix.field);
+    printf("fmt.type:\t\t%d\n", fmt.type);
+    printf("pix.pixelformat:\t%c%c%c%c\n", fmt.fmt.pix.pixelformat & 0xFF, (fmt.fmt.pix.pixelformat >> 8) & 0xFF, (fmt.fmt.pix.pixelformat >> 16) & 0xFF, (fmt.fmt.pix.pixelformat >> 24) & 0xFF);
+    printf("pix.height:\t\t%d\n", fmt.fmt.pix.height);
+    printf("pix.width:\t\t%d\n", fmt.fmt.pix.width);
+    printf("pix.field:\t\t%d\n", fmt.fmt.pix.field);
 	}
 	// Set fps
 	setfps.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -159,31 +159,31 @@ int v4l2_grab(void) {
 
 int close_v4l2(void)
 {
-    // 9. Close device///////////////////////////////////
-    if(fd != -1) {
-        close(fd);
-        return TRUE;
-    }
-    return FALSE;
-    /////////////////////////////////////////////////////
+  // 9. Close device///////////////////////////////////
+  if(fd != -1) {
+      close(fd);
+      return TRUE;
+  }
+  return FALSE;
+  /////////////////////////////////////////////////////
 }
 
 void stop_streaming(void)
 {
-    unsigned int n_buffers;
+  unsigned int n_buffers;
 
-    // 7. Stop streaming/////////////////////////////////
-    type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    if (ioctl(fd, VIDIOC_STREAMOFF/*lab3.1_v4l2*/, &type))
-        perror("Stop streaming error:");
-    /////////////////////////////////////////////////////
+  // 7. Stop streaming/////////////////////////////////
+  type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  if (ioctl(fd, VIDIOC_STREAMOFF/*lab3.1_v4l2*/, &type))
+    perror("Stop streaming error:");
+  /////////////////////////////////////////////////////
 
-    // 8. Memory unmap///////////////////////////////////
-    for (n_buffers = 0; n_buffers < req.count; n_buffers++)
-        munmap(buffers[n_buffers].start, buffers[n_buffers].length);
-    /////////////////////////////////////////////////////
+  // 8. Memory unmap///////////////////////////////////
+  for (n_buffers = 0; n_buffers < req.count; n_buffers++)
+    munmap(buffers[n_buffers].start, buffers[n_buffers].length);
+  /////////////////////////////////////////////////////
 
-    // 9. Close device///////////////////////////////////
-    close_v4l2();
-    /////////////////////////////////////////////////////
+  // 9. Close device///////////////////////////////////
+  close_v4l2();
+  /////////////////////////////////////////////////////
 }
