@@ -19,6 +19,7 @@ typedef struct {
 } image_t;
 
 extern image_t image_open (char* fname);
+extern void image_close (image_t img);
 extern void image_test (image_t* img);
 
 #endif /* __IMAGE_H__ */

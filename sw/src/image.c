@@ -29,7 +29,17 @@ image_t image_open (char* fname) {
   }
 
   //
-  printf("Image size: %0dx%0d\n", img.width, img.height);
-  printf("Byte per pixel: %0d\n", img.byte_per_pixel);
   return img;
+}
+
+//@
+void image_close (image_t img) {
+  fclose(img.fh);
+}
+
+//@
+void image_info (image_t img) {
+  printf("IMAGE Info:\n");
+  printf("- Size: %0dx%0d\n", img.width, img.height);
+  printf("- Byte per pixel: %0d\n", img.byte_per_pixel);
 }

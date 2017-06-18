@@ -35,7 +35,7 @@ typedef struct tagBITMAPFILEHEADER{
     DWORD   bfReserved;        // 0
     DWORD   bfOffBits;         // must be 54
 
-}BITMAPFILEHEADER;
+} BITMAPFILEHEADER;
 
 typedef struct tagBITMAPINFOHEADER{
     DWORD   biSize;            // must be 0x28
@@ -49,14 +49,14 @@ typedef struct tagBITMAPINFOHEADER{
     DWORD   biYPelsPerMeter;   //
     DWORD   biClrUsed;         //
     DWORD   biClrImportant;    //
-}BITMAPINFOHEADER;
+} BITMAPINFOHEADER;
 
 typedef struct tagRGBQUAD{
     BYTE    rgbBlue;
     BYTE    rgbGreen;
     BYTE    rgbRed;
     BYTE    rgbReserved;
-}RGBQUAD;
+} RGBQUAD;
 
 #define  TRUE	1
 #define  FALSE	0
