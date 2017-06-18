@@ -3,7 +3,7 @@
 void init_image(FILE* fh) {
   if (fh == NULL) {
     printf("fopen fh error\n");
-    return -1;
+    exit(-1);
   }
   // move offset to 10 to find rgb raw data offset
   fseek(fh, 10, SEEK_SET);
@@ -22,5 +22,4 @@ void init_image(FILE* fh) {
   image_s = (unsigned char *)malloc((size_t)width * height * byte_per_pixel);
   if (image_s == NULL) {
   printf("malloc images_s error\n");
-  return -1;
 }
