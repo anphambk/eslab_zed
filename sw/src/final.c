@@ -22,7 +22,8 @@ void init_image (char* fname) {
 
   image_s = (unsigned char *)malloc((size_t)width * height * byte_per_pixel);
   if (image_s == NULL) {
-  printf("malloc images_s error\n");
+    printf("malloc images_s error\n");
+  }
 }
 
 void process(void)
