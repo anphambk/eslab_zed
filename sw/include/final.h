@@ -4,7 +4,6 @@
 #include "hdmi.h"
 #include "v4l2grab.h"
 #include "image.h"
-#include "imshow.h"
 
 #define DEV_HDMI "/dev/fb0"
 #define DEV_WEBCAM "/dev/video0"

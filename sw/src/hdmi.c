@@ -56,4 +56,5 @@ void hdmi_info (hdmi_t hdmi) {
 //@
 void hdmi_close(hdmi_t hdmi) {
   munmap(hdmi.fbp, hdmi.screensize);
+  fclose(hdmi.fbp);
 }
