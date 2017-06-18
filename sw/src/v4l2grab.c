@@ -33,12 +33,12 @@ int init_v4l2(void)
 	// Print support format
 	fmtdesc.index = 0;
 	fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	printf("Support format:\n");
-	while(ioctl(fd, VIDIOC_ENUM_FMT/*lab3.1_v4l2*/, &fmtdesc) != -1)
-	{
-		printf("\t%d.%s\n",fmtdesc.index+1,fmtdesc.description);
-		fmtdesc.index++;
-	}
+	//printf("Support format:\n");
+	//while(ioctl(fd, VIDIOC_ENUM_FMT/*lab3.1_v4l2*/, &fmtdesc) != -1)
+	//{
+	//	printf("\t%d.%s\n",fmtdesc.index+1,fmtdesc.description);
+	//	fmtdesc.index++;
+	//}
 
     // Set format
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -72,7 +72,7 @@ int init_v4l2(void)
 	setfps.parm.capture.timeperframe.denominator = 10;
     /////////////////////////////////////////////////////
 
-	printf("init %s \t[OK]\n", FILE_VIDEO);
+	//printf("init %s \t[OK]\n", FILE_VIDEO);
 
 	return TRUE;
 }

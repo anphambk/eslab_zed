@@ -27,6 +27,7 @@ image_t image_open (char* fname) {
   if (img.data == NULL) {
     printf("malloc images_s error\n");
   }
+  fread(img.data, sizeof(unsigned char), (size_t)(long)img.width * img.height * img.byte_per_pixel, img.fh);
 
   //
   return img;
