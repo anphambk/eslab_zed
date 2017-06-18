@@ -1,32 +1,5 @@
 #include "final.h"
 
-void init_image (char* fname) {
-  fp_s = fopen(fname, "rb");
-  if (fp_s == NULL) {
-    printf("fopen fp_s error\n");
-    return;
-  }
-  // move offset to 10 to find rgb raw data offset
-  fseek(fp_s, 10, SEEK_SET);
-  fread(&rgb_raw_data_offset, sizeof(unsigned int), 1, fp_s);
-  // move offset to 18    to get width & height;
-  fseek(fp_s, 18, SEEK_SET);
-  fread(&width,  sizeof(unsigned int), 1, fp_s);
-  fread(&height, sizeof(unsigned int), 1, fp_s);
-  // get  bit per pixel
-  fseek(fp_s, 28, SEEK_SET);
-  fread(&bit_per_pixel, sizeof(unsigned short), 1, fp_s);
-  byte_per_pixel = bit_per_pixel / 8;
-  printf("byte per pixel: %0d\n", byte_per_pixel);
-  // move offset to rgb_raw_data_offset to get RGB raw data
-  fseek(fp_s, rgb_raw_data_offset, SEEK_SET);
-
-  image_s = (unsigned char *)malloc((size_t)width * height * byte_per_pixel);
-  if (image_s == NULL) {
-    printf("malloc images_s error\n");
-  }
-}
-
 void process(void)
 {
     // 6. Image processing///////////////////////////////
@@ -75,65 +48,57 @@ void process(void)
  	    *(fbp + location + 7) = 0;
       
       /* CHROMA-KEY */
-      location2 = (2*j + vinfo.xoffset + 480) * (vinfo.bits_per_pixel/8)
-                + (  i + vinfo.yoffset      ) * finfo.line_length; //0x001f0031
-      *(fbp + location2    ) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 1);
-      *(fbp + location2 + 1) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 0);
-      *(fbp + location2 + 2) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 2);
-      *(fbp + location2 + 3) = 0;
-      *(fbp + location2 + 4) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 5);
-      *(fbp + location2 + 5) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 4);
-      *(fbp + location2 + 6) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 6);
-      *(fbp + location2 + 7) = 0;
+      //location2 = (2*j + vinfo.xoffset + 480) * (vinfo.bits_per_pixel/8)
+      //          + (  i + vinfo.yoffset      ) * finfo.line_length; //0x001f0031
+      //*(fbp + location2    ) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 1);
+      //*(fbp + location2 + 1) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 0);
+      //*(fbp + location2 + 2) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 2);
+      //*(fbp + location2 + 3) = 0;
+      //*(fbp + location2 + 4) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 5);
+      //*(fbp + location2 + 5) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 4);
+      //*(fbp + location2 + 6) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 6);
+      //*(fbp + location2 + 7) = 0;
       /* CHROMA-KEY */
   	}
   }
   /////////////////////////////////////////////////////
 }
 
-void test_image() {
-  x_max = width;
-  y_max = height;
+void test_image(image_t img) {
   int x, y;
   long int location;
 
-  for (y = 0; y < y_max; y++) {
-    for (x = 0; x < x_max; x++) {
+  printf("Test: %0dx%0d\n", img.width, img.height);
+  for (y = 0; y < img.height; y++) {
+    for (x = 0; x < img.width; x++) {
       location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
                  (y+vinfo.yoffset) * finfo.line_length;
-      if (vinfo.bits_per_pixel == 32) {
-        *(fbp + location    ) = *(image_s + byte_per_pixel * (width * y + x) + 1);
-        *(fbp + location + 1) = *(image_s + byte_per_pixel * (width * y + x) + 0);
-        *(fbp + location + 2) = *(image_s + byte_per_pixel * (width * y + x) + 2);
-        *(fbp + location + 3) = 0;      // No transparency
-      } else  { //assume 16bpp
-        int b = 10;
-        int g = (x-100)/6;     // A little green
-        int r = 31-(y-100)/16;    // A lot of red
-        unsigned short int t = r<<11 | g << 5 | b;
-        *((unsigned short int*)(fbp + location)) = t;
-      }
+      *(fbp + location    ) = *(img.data + img.byte_per_pixel * (img.width * y + x) + 1); // blue
+      *(fbp + location + 1) = 200; // 
+      *(fbp + location + 2) = *(img.data + img.byte_per_pixel * (img.width * y + x) + 2); // 
+      *(fbp + location + 3) = 0;      // No transparency
     }
   }
 }
 
 int main(int argc, char* argv[])
 {
+  image_t img;
+  
+  img = image_open(argv[1]);
   init_hdmi();
-  init_image(argv[1]);
-
-  //test_image();
-  while(TRUE) {
-	  if (init_v4l2() == FALSE)
-      return FALSE;
-	  if (v4l2_grab() == FALSE)
-      return FALSE;
-    v4l2_dequeue();
-    process();
-    v4l2_enqueue();
-    stop_streaming();
-    close_v4l2();
-  }
+  test_image(img);
+  //while(TRUE) {
+	//  if (init_v4l2() == FALSE)
+  //    return FALSE;
+	//  if (v4l2_grab() == FALSE)
+  //    return FALSE;
+  //  v4l2_dequeue();
+  //  process();
+  //  v4l2_enqueue();
+  //  stop_streaming();
+  //  close_v4l2();
+  //}
 
   munmap(fbp, screensize);
   return 0;
