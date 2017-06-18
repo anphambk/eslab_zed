@@ -74,7 +74,7 @@
      0, 0, 0, 0,  // v resolution
      0, 0, 0, 0,  // used colors
      0, 0, 0, 0   // important colors
-   };fname
+   };
 
    unsigned int file_size;           // file size
    unsigned int rgb_raw_data_offset; // RGB raw data offset

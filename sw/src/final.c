@@ -83,7 +83,7 @@ void test_image() {
 
 int main(int argc, char* argv[])
 {
-  img = image_open(argv[1]);
+  /*img = image_open(argv[1]);
   hdmi = hdmi_open(DEV_HDMI);
 
   image_info(img);
@@ -104,5 +104,8 @@ int main(int argc, char* argv[])
 
   image_close(img);
   hdmi_close(hdmi);
+  */
+
+  imshow(argv[1]);
   return 0;
 }
