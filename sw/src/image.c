@@ -1,3 +1,4 @@
+#include "image.h"
 
 void init_image(void) {
   fp_s = fopen(argv[1], "rb");
