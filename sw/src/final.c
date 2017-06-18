@@ -37,6 +37,7 @@ void process(void)
       b2 = (b2>255)? 255: ((b2<0)? 0: b2);
       g2 = (g2>255)? 255: ((g2<0)? 0: g2);
 
+      /* FG */
       location = (2*j + hdmi.vinfo.xoffset - 480) * (hdmi.vinfo.bits_per_pixel/8)
                + (  i + hdmi.vinfo.yoffset      ) * hdmi.finfo.line_length; //0x001f0031
  	    *(hdmi.fbp + location    ) = (unsigned char)b1;
@@ -47,19 +48,20 @@ void process(void)
  	    *(hdmi.fbp + location + 5) = (unsigned char)g2;
  	    *(hdmi.fbp + location + 6) = (unsigned char)r2;
  	    *(hdmi.fbp + location + 7) = 0;
+      /* FG */
       
-      /* CHROMA-KEY */
+      /* BG */
       location2 = (2*j + hdmi.vinfo.xoffset + 480) * (hdmi.vinfo.bits_per_pixel/8)
                 + (  i + hdmi.vinfo.yoffset      ) * hdmi.finfo.line_length; //0x001f0031
       *(hdmi.fbp + location2    ) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 0);
       *(hdmi.fbp + location2 + 1) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 1);
       *(hdmi.fbp + location2 + 2) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 2);
       *(hdmi.fbp + location2 + 3) = 0;
-      *(hdmi.fbp + location2 + 4) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 4);
-      *(hdmi.fbp + location2 + 5) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 5);
-      *(hdmi.fbp + location2 + 6) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 6);
+      *(hdmi.fbp + location2 + 4) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 3);
+      *(hdmi.fbp + location2 + 5) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 4);
+      *(hdmi.fbp + location2 + 6) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 5);
       *(hdmi.fbp + location2 + 7) = 0;
-      /* CHROMA-KEY */
+      /* BG */
   	}
   }
   /////////////////////////////////////////////////////
