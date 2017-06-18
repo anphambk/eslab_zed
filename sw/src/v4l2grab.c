@@ -12,25 +12,23 @@ int init_v4l2(void)
 
     // 2. Device setup///////////////////////////////////
 	// Query device capabilities
-	if (ioctl(fd, VIDIOC_QUERYCAP/*lab3.1_v4l2*/, &cap) == -1)
-	{
+	if (ioctl(fd, VIDIOC_QUERYCAP/*lab3.1_v4l2*/, &cap) == -1) {
 		printf("Error opening device %s: unable to query device.\n",FILE_VIDEO);
 		return  FALSE;
 	}
-	else
-	{
-    printf("driver:\t\t%s\n"    , cap.driver);
-    printf("card:\t\t%s\n"      , cap.card);
-    printf("bus_info:\t%s\n"    , cap.bus_info);
-    printf("version:\t%d\n"     , cap.version);
-    printf("capabilities:\t%x\n", cap.capabilities);
+	//else {
+  //  printf("driver:\t\t%s\n"    , cap.driver);
+  //  printf("card:\t\t%s\n"      , cap.card);
+  //  printf("bus_info:\t%s\n"    , cap.bus_info);
+  //  printf("version:\t%d\n"     , cap.version);
+  //  printf("capabilities:\t%x\n", cap.capabilities);
 
-    if ((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) == V4L2_CAP_VIDEO_CAPTURE)
-    printf("Device %s: supports capture.\n",FILE_VIDEO);
+  //  if ((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) == V4L2_CAP_VIDEO_CAPTURE)
+  //  printf("Device %s: supports capture.\n",FILE_VIDEO);
 
-		if ((cap.capabilities & V4L2_CAP_STREAMING) == V4L2_CAP_STREAMING)
-			printf("Device %s: supports streaming.\n",FILE_VIDEO);
-	}
+	//	if ((cap.capabilities & V4L2_CAP_STREAMING) == V4L2_CAP_STREAMING)
+	//		printf("Device %s: supports streaming.\n",FILE_VIDEO);
+	//}
 
 	// Print support format
 	fmtdesc.index = 0;
@@ -61,13 +59,13 @@ int init_v4l2(void)
 		printf("Unable to get format\n");
 		return FALSE;
 	}
-	{
-    printf("fmt.type:\t\t%d\n", fmt.type);
-    printf("pix.pixelformat:\t%c%c%c%c\n", fmt.fmt.pix.pixelformat & 0xFF, (fmt.fmt.pix.pixelformat >> 8) & 0xFF, (fmt.fmt.pix.pixelformat >> 16) & 0xFF, (fmt.fmt.pix.pixelformat >> 24) & 0xFF);
-    printf("pix.height:\t\t%d\n", fmt.fmt.pix.height);
-    printf("pix.width:\t\t%d\n", fmt.fmt.pix.width);
-    printf("pix.field:\t\t%d\n", fmt.fmt.pix.field);
-	}
+	//{
+  //  printf("fmt.type:\t\t%d\n", fmt.type);
+  //  printf("pix.pixelformat:\t%c%c%c%c\n", fmt.fmt.pix.pixelformat & 0xFF, (fmt.fmt.pix.pixelformat >> 8) & 0xFF, (fmt.fmt.pix.pixelformat >> 16) & 0xFF, (fmt.fmt.pix.pixelformat >> 24) & 0xFF);
+  //  printf("pix.height:\t\t%d\n", fmt.fmt.pix.height);
+  //  printf("pix.width:\t\t%d\n", fmt.fmt.pix.width);
+  //  printf("pix.field:\t\t%d\n", fmt.fmt.pix.field);
+	//}
 	// Set fps
 	setfps.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	setfps.parm.capture.timeperframe.numerator = 10;

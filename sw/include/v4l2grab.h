@@ -75,7 +75,6 @@ static  struct  v4l2_capability     cap;
         struct  v4l2_buffer         buf;
         enum    v4l2_buf_type       type;
 
-unsigned char frame_buffer[IMAGEWIDTH*IMAGEHEIGHT*3];
 BITMAPFILEHEADER bf;
 BITMAPINFOHEADER bi;
 

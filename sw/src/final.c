@@ -17,6 +17,7 @@ void init_image (char* fname) {
   fseek(fp_s, 28, SEEK_SET);
   fread(&bit_per_pixel, sizeof(unsigned short), 1, fp_s);
   byte_per_pixel = bit_per_pixel / 8;
+  printf("byte per pixel: %0d\n", byte_per_pixel);
   // move offset to rgb_raw_data_offset to get RGB raw data
   fseek(fp_s, rgb_raw_data_offset, SEEK_SET);
 
@@ -33,7 +34,7 @@ void process(void)
   unsigned char y1, y2, u, v;
   int r1, g1, b1, r2, g2, b2;
   char *pointer;
-  long int location;
+  long int location, location2;
   long int offset;
 
 	pointer = buffers[0].start;
@@ -47,7 +48,7 @@ void process(void)
   		y2 = *( pointer + (i*(IMAGEWIDTH/2)+j)*4 + 2);
   		v  = *( pointer + (i*(IMAGEWIDTH/2)+j)*4 + 3);
 
-		/*lab3.1_YUYV2RGB*/
+		  /*lab3.1_YUYV2RGB*/
       r1 = y1 + 1.042 * (v - 128);
       g1 = y1 - 0.344 * (u - 128) - 0.714 * (v - 128);
       b1 = y1 + 1.772 * (u - 128);
@@ -62,13 +63,6 @@ void process(void)
       b2 = (b2>255)? 255: ((b2<0)? 0: b2);
       g2 = (g2>255)? 255: ((g2<0)? 0: g2);
 
-  		//*(frame_buffer + ((IMAGEHEIGHT-1-i)*(IMAGEWIDTH/2)+j)*6    ) = (unsigned char)b1;
-  		//*(frame_buffer + ((IMAGEHEIGHT-1-i)*(IMAGEWIDTH/2)+j)*6 + 1) = (unsigned char)g1;
-  		//*(frame_buffer + ((IMAGEHEIGHT-1-i)*(IMAGEWIDTH/2)+j)*6 + 2) = (unsigned char)r1;
-  		//*(frame_buffer + ((IMAGEHEIGHT-1-i)*(IMAGEWIDTH/2)+j)*6 + 3) = (unsigned char)b2;
-  		//*(frame_buffer + ((IMAGEHEIGHT-1-i)*(IMAGEWIDTH/2)+j)*6 + 4) = (unsigned char)g2;
-  		//*(frame_buffer + ((IMAGEHEIGHT-1-i)*(IMAGEWIDTH/2)+j)*6 + 5) = (unsigned char)r2;
-      
       location = (2*j + vinfo.xoffset - 480) * (vinfo.bits_per_pixel/8)
                + (  i + vinfo.yoffset      ) * finfo.line_length; //0x001f0031
  	    *(fbp + location    ) = (unsigned char)b1;
@@ -79,28 +73,68 @@ void process(void)
  	    *(fbp + location + 5) = (unsigned char)g2;
  	    *(fbp + location + 6) = (unsigned char)r2;
  	    *(fbp + location + 7) = 0;
+      
+      /* CHROMA-KEY */
+      location2 = (2*j + vinfo.xoffset + 480) * (vinfo.bits_per_pixel/8)
+                + (  i + vinfo.yoffset      ) * finfo.line_length; //0x001f0031
+      *(fbp + location2    ) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 1);
+      *(fbp + location2 + 1) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 0);
+      *(fbp + location2 + 2) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 2);
+      *(fbp + location2 + 3) = 0;
+      *(fbp + location2 + 4) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 5);
+      *(fbp + location2 + 5) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 4);
+      *(fbp + location2 + 6) = *(image_s + byte_per_pixel * (IMAGEWIDTH * i + 2*j) + 6);
+      *(fbp + location2 + 7) = 0;
+      /* CHROMA-KEY */
   	}
   }
   /////////////////////////////////////////////////////
 }
 
-int main(void)
+void test_image() {
+  x_max = width;
+  y_max = height;
+  int x, y;
+  long int location;
+
+  for (y = 0; y < y_max; y++) {
+    for (x = 0; x < x_max; x++) {
+      location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+                 (y+vinfo.yoffset) * finfo.line_length;
+      if (vinfo.bits_per_pixel == 32) {
+        *(fbp + location    ) = *(image_s + byte_per_pixel * (width * y + x) + 1);
+        *(fbp + location + 1) = *(image_s + byte_per_pixel * (width * y + x) + 0);
+        *(fbp + location + 2) = *(image_s + byte_per_pixel * (width * y + x) + 2);
+        *(fbp + location + 3) = 0;      // No transparency
+      } else  { //assume 16bpp
+        int b = 10;
+        int g = (x-100)/6;     // A little green
+        int r = 31-(y-100)/16;    // A lot of red
+        unsigned short int t = r<<11 | g << 5 | b;
+        *((unsigned short int*)(fbp + location)) = t;
+      }
+    }
+  }
+}
+
+int main(int argc, char* argv[])
 {
   init_hdmi();
+  init_image(argv[1]);
 
-	if (init_v4l2() == FALSE)
-    return FALSE;
-
-	if (v4l2_grab() == FALSE)
-    return FALSE;
-  
+  //test_image();
   while(TRUE) {
+	  if (init_v4l2() == FALSE)
+      return FALSE;
+	  if (v4l2_grab() == FALSE)
+      return FALSE;
     v4l2_dequeue();
     process();
     v4l2_enqueue();
+    stop_streaming();
+    close_v4l2();
   }
 
   munmap(fbp, screensize);
-  close_v4l2();
   return 0;
 }
