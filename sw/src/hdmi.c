@@ -38,8 +38,8 @@ hdmi_t hdmi_open (char* fname) {
   printf("The framebuffer device was mapped to memory successfully.\n");
 
   // Offsets
-  hdmi.vinfo.xoffset = 0;
-  hdmi.vinfo.yoffset = 0;
+  hdmi.vinfo.xoffset = (hdmi.vinfo.xres - 640) / 2;
+  hdmi.vinfo.yoffset = (hdmi.vinfo.yres - 480) / 2;
 
   return hdmi;
 }
