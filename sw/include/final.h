@@ -7,7 +7,7 @@
 
 #define DEV_HDMI "/dev/fb0"
 #define DEV_WEBCAM "/dev/video0"
-#define CB_THRESH 180
+#define CB_THRESH 150
 #define CR_THRESH 128
 
 image_t img;
