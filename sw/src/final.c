@@ -8,7 +8,7 @@ void process(void)
   unsigned char y1, y2, u, v;
   int r1, g1, b1, r2, g2, b2;
   char *pointer;
-  long int location, location2;
+  long int location;
   long int offset;
 
 	pointer = buffers[0].start;
