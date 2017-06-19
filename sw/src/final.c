@@ -6,6 +6,7 @@ void process(void)
     // 6. Image processing///////////////////////////////
 	int           i, j;
   unsigned char y1, y2, u, v;
+  int r, g, b;
   int r1, g1, b1, r2, g2, b2;
   char *pointer;
   long int location;
@@ -25,13 +26,16 @@ void process(void)
       /* CHROMA-KEY */
       location = (2*j + hdmi.vinfo.xoffset - 480) * (hdmi.vinfo.bits_per_pixel/8)
                + (  i + hdmi.vinfo.yoffset      ) * hdmi.finfo.line_length; //0x001f0031
+      r = 1.042 * (v - 128);
+      g = 0.344 * (u - 128) - 0.714 * (v - 128);
+      b = 1.772 * (u - 128);
       if (v < CHROMATHRESH) { // FG
-        r1 = y1 + 1.042 * (v - 128);
-        g1 = y1 - 0.344 * (u - 128) - 0.714 * (v - 128);
-        b1 = y1 + 1.772 * (u - 128);
-        r2 = y2 + 1.042 * (v - 128);
-        g2 = y2 - 0.344 * (u - 128) - 0.714 * (v - 128);
-        b2 = y2 + 1.772 * (u - 128);
+        r1 = y1 + r;
+        g1 = y1 - g;
+        b1 = y1 + b;
+        r2 = y2 + r;
+        g2 = y2 - g;
+        b2 = y2 + b;
 
         r1 = (r1>255)? 255: ((r1<0)? 0: r1);
         b1 = (b1>255)? 255: ((b1<0)? 0: b1);
