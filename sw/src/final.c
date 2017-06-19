@@ -28,7 +28,7 @@ void process(void)
       r = 1.402 * (v - 128);
       g = 0.344 * (u - 128) + 0.714 * (v - 128);
       b = 1.772 * (u - 128);
-      if ((u <  CHROMATHRESH) && (v < CHROMATHRESH)) { // BG
+      if ((u >  CB_THRESH) && (v < CR_THRESH)) { // BG
         *(hdmi.fbp + location    ) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 0);
         *(hdmi.fbp + location + 1) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 1);
         *(hdmi.fbp + location + 2) = *(img.data + img.byte_per_pixel * (IMAGEWIDTH * (IMAGEHEIGHT-i) + 2*j) + 2);

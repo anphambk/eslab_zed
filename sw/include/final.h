@@ -7,7 +7,8 @@
 
 #define DEV_HDMI "/dev/fb0"
 #define DEV_WEBCAM "/dev/video0"
-#define CHROMATHRESH 110
+#define CB_THRESH 180
+#define CR_THRESH 128
 
 image_t img;
 hdmi_t hdmi;
